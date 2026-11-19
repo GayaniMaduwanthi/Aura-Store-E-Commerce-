@@ -29,4 +29,4 @@
 
 ## 🚀 Live Demo
 
-🌐 **Live Storefront:** `https://your-github-username.github.io/aura-store-ecommerce/` *(Replace with your GitHub Pages link)*
+🌐 **Live Storefront:** https://gayanimaduwanthi.github.io/Aura-Store-E-Commerce-/
