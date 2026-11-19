@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Store - Enterprise E-Commerce Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #cbd5e1;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --input-bg: #ffffff;
+            --modal-bg: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0b0f19;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --border-color: #334155;
+            --primary: #6366f1;
+            --primary-hover: #818cf8;
+            --input-bg: #0f172a;
+            --modal-bg: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header / Navbar */
+        header {
+            background: var(--card-bg);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: var(--bg-color);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 7px 13px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .user-greeting {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .cart-badge {
+            background: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .cart-badge:hover { background: var(--primary-hover); }
+
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .hero p { font-size: 14px; opacity: 0.95; max-width: 600px; margin: auto; }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 20px 50px 20px;
+        }
+
+        /* Controls */
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-sort-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-input, .sort-select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-main);
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .search-input { width: 260px; }
+
+        .category-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.08);
+        }
+
+        .product-img-wrapper {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .wishlist-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+        }
+
+        .wishlist-btn:hover { transform: scale(1.1); }
+
+        .quick-view-tag {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(15, 23, 42, 0.85);
+            color: white;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .product-content { padding: 20px; }
+
+        .product-category {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+
+        .product-title:hover { color: var(--primary); }
+
+        .product-price {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .buy-btn {
+            flex: 2;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .buy-btn:hover { background: var(--primary-hover); }
+
+        .view-btn {
+            flex: 1;
+            background: var(--bg-color);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Cart Section */
+        .cart-section {
+            margin-top: 50px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cart-list { list-style: none; margin-top: 15px; }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .qty-btn {
+            background: var(--bg-color);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            width: 26px;
+            height: 26px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .remove-btn {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .cart-footer {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .cart-total { font-size: 20px; font-weight: 700; color: var(--text-main); }
+
+        .checkout-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .checkout-btn:hover { background: #059669; }
+
+        /* Modals */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.65);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: var(--modal-bg);
+            color: var(--text-main);
+            max-width: 520px;
+            width: 100%;
+            border-radius: 14px;
+            padding: 28px;
+            position: relative;
+            box-shadow: 0 20px 25px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px; right: 18px;
+            font-size: 22px;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* Auth & Form Styles */
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .auth-tab {
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .auth-error {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
+            border: 1px solid #fca5a5;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-main);
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .manage-list {
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .manage-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .order-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-badge {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .receipt-list {
+            margin: 15px 0;
+            padding: 12px;
+            background: var(--bg-color);
+            border-radius: 8px;
+            font-size: 13px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 2000;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🛍️ Aura Store</div>
+        <div class="nav-actions">
+            <button class="nav-btn" onclick="openWishlistModal()">❤️ Wishlist (<span id="wishlistCount">0</span>)</button>
+            <button class="nav-btn" onclick="openAdminModal()">⚙️ Manage Products</button>
+            <button class="nav-btn" onclick="openOrdersModal()">📦 My Orders</button>
+            <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙 Dark</button>
+            <div id="authContainer">
+                <button class="nav-btn" onclick="openAuthModal('login')">👤 Login</button>
+            </div>
+            <div class="cart-badge" onclick="scrollToCart()">🛒 Cart (<span id="cartItemCount">0</span>)</div>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h1>Welcome to Aura Store</h1>
+        <p>Premium tech gadgets, accessories, and everyday lifestyle essentials delivered across Sri Lanka.</p>
+    </div>
+
+    <div class="container">
+        <div class="controls-bar">
+            <div class="search-sort-group">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search products..." onkeyup="loadProducts()">
+                <select id="sortSelect" class="sort-select" onchange="loadProducts()">
+                    <option value="default">Sort: Featured</option>
+                    <option value="priceLow">Price: Low to High</option>
+                    <option value="priceHigh">Price: High to Low</option>
+                    <option value="nameAsc">Name: A to Z</option>
+                </select>
+            </div>
+            <div class="category-filters">
+                <button class="filter-btn active" onclick="setCategory('All', this)">All</button>
+                <button class="filter-btn" onclick="setCategory('Electronics', this)">Electronics</button>
+                <button class="filter-btn" onclick="setCategory('Accessories', this)">Accessories</button>
+                <button class="filter-btn" onclick="setCategory('Lifestyle', this)">Lifestyle</button>
+            </div>
+        </div>
+
+        <div class="products-grid" id="productGrid"></div>
+
+        <div class="cart-section" id="cartSection">
+            <h3>Shopping Cart</h3>
+            <ul id="cartList" class="cart-list"></ul>
+            <div class="cart-footer">
+                <div class="cart-total" id="cartTotal">Total: Rs. 0.00</div>
+                <button class="checkout-btn" onclick="openCheckoutModal()">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div class="modal-overlay" id="wishlistModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeModal('wishlistModal')">&times;</button>
+            <h3 style="margin-bottom: 5px;">❤️ My Saved Wishlist</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Items you saved for later shopping.</p>
+            <div id="wishlistList"></div>
+        </div>
+    </div>
+
+    <!-- Checkout Delivery & Payment Modal -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeModal('checkoutModal')">&times;</button>
+            <h3 style="margin-bottom: 5px;">🚚 Delivery & Payment Details</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Complete your shipping info to place the order.</p>
+
+            <form onsubmit="processOrder(event)">
+                <div class="form-group">
+                    <label>Recipient Name</label>
+                    <input type="text" id="shipName" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="shipPhone" placeholder="07X XXXXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label>Delivery Address</label>
+                    <textarea id="shipAddress" rows="2" placeholder="No. 123, Main Street, Colombo" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="paymentMethod" required>
+                        <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+                        <option value="Credit / Debit Card">Credit / Debit Card</option>
+                        <option value="Bank Transfer">Online Bank Transfer</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: 700; margin: 15px 0; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                    <span>Total Amount:</span>
+                    <span id="checkoutModalTotal" style="color: var(--primary);"></span>
+                </div>
+                <button type="submit" class="checkout-btn" style="width: 100%;">Confirm & Place Order</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Product Management Modal -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeModal('adminModal')">&times;</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; padding-right: 25px;">
+                <h3>⚙️ Product Management</h3>
+                <button class="remove-btn" onclick="resetDemoData()">🔄 Reset Demo Data</button>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Add new items to the catalog or remove existing products.</p>
+
+            <form onsubmit="addNewProduct(event)">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="newProdName" placeholder="e.g., USB-C Fast Charger" required>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Category</label>
+                        <select id="newProdCategory">
+                            <option value="Electronics">Electronics</option>
+                            <option value="Accessories">Accessories</option>
+                            <option value="Lifestyle">Lifestyle</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Price (Rs.)</label>
+                        <input type="number" id="newProdPrice" placeholder="4500" min="1" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Image URL (Optional)</label>
+                    <input type="url" id="newProdImage" placeholder="https://images.unsplash.com/...">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="newProdDesc" rows="2" placeholder="Short product description..." required></textarea>
+                </div>
+                <button type="submit" class="buy-btn" style="width: 100%; padding: 10px;">+ Add Product to Store</button>
+            </form>
+
+            <div class="manage-list">
+                <h4 style="font-size: 14px; margin-bottom: 10px;">Current Catalog Items</h4>
+                <div id="adminProductList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Orders History Modal -->
+    <div class="modal-overlay" id="ordersModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeModal('ordersModal')">&times;</button>
+            <h3 style="margin-bottom: 5px;">📦 Order Management & History</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Track your placed orders and purchase history.</p>
+            <div id="ordersHistoryList"></div>
+        </div>
+    </div>
+
+    <!-- Login / Register Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeModal('authModal')">&times;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" id="registerTab" onclick="switchAuthTab('register')">Create Account</button>
+            </div>
+
+            <div class="auth-error" id="authErrorBox"></div>
+
+            <form id="authForm" onsubmit="handleAuth(event)">
+                <div class="form-group" id="nameGroup" style="display: none;">
+                    <label for="userName">Full Name</label>
+                    <input type="text" id="userName" placeholder="e.g., Gayani Maduwanthi">
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email Address</label>
+                    <input type="email" id="userEmail" placeholder="name@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">Password</label>
+                    <input type="password" id="userPassword" placeholder="••••••••" required minlength="4">
+                </div>
+                <button type="submit" class="buy-btn" id="authSubmitBtn" style="width: 100%; padding: 12px; margin-top: 5px;">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeModal('productModal')">&times;</button>
+            <img id="modalImg" src="" alt="" class="modal-img" onerror="this.src='https://via.placeholder.com/500x300?text=Aura+Store+Item'">
+            <div id="modalCategory" class="product-category"></div>
+            <h3 id="modalTitle" style="margin-bottom: 8px;"></h3>
+            <p id="modalDesc" style="font-size: 14px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5;"></p>
+            <div id="modalPrice" class="product-price"></div>
+            <button class="buy-btn" id="modalAddBtn" style="width: 100%; padding: 12px;">Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeModal('receiptModal')">&times;</button>
+            <h3 style="color: #10b981; margin-bottom: 5px;">🎉 Order Confirmed!</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Thank you for shopping with Aura Store. Here is your summary:</p>
+            <div style="font-size: 12px; margin-top: 10px; font-weight: 600;" id="orderIdDisplay"></div>
+            <div style="font-size: 12px; color: var(--text-muted);" id="customerDisplay"></div>
+            <div style="font-size: 12px; color: var(--text-muted);" id="shippingDisplay"></div>
+            <div class="receipt-list" id="receiptItems"></div>
+            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 16px; margin-bottom: 15px;">
+                <span>Total Paid:</span>
+                <span id="receiptTotal" style="color: var(--primary);"></span>
+            </div>
+            <button class="buy-btn" style="width: 100%; padding: 12px;" onclick="closeModal('receiptModal')">Continue Shopping</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toastMsg">Notification</div>
+
+    <script>
+        const fallbackPlaceholder = "https://via.placeholder.com/500x300?text=Aura+Store+Product";
+
+        const defaultProducts = [
+            { id: 1, name: "Wireless Bluetooth Headphones", category: "Electronics", price: 8500.00, desc: "Active noise-canceling over-ear wireless headphones with 30-hour battery life and deep bass.", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60" },
+            { id: 2, name: "Smart Fitness Watch", category: "Electronics", price: 12500.00, desc: "Water-resistant smartwatch featuring heart-rate monitoring, step tracking, and instant notifications.", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60" },
+            { id: 3, name: "Minimalist Casual Backpack", category: "Lifestyle", price: 5400.00, desc: "Durable, water-repellent everyday laptop backpack with padded 15.6-inch compartment.", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=60" },
+            { id: 4, name: "Portable Bluetooth Speaker", category: "Electronics", price: 6800.00, desc: "Compact 360-degree surround sound speaker built for indoor and outdoor adventures.", image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&auto=format&fit=crop&q=60" },
+            { id: 5, name: "Stainless Steel Water Bottle", category: "Lifestyle", price: 2900.00, desc: "Double-wall vacuum insulated bottle that keeps drinks cold for 24 hours or hot for 12 hours.", image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&auto=format&fit=crop&q=60" },
+            { id: 6, name: "Ergonomic Desk Mat", category: "Accessories", price: 2200.00, desc: "Smooth micro-woven surface desk pad with anti-slip rubber base for office and gaming setups.", image: "https://images.unsplash.com/photo-1616440347437-b1c73416efc2?w=500&auto=format&fit=crop&q=60" },
+            { id: 7, name: "Mechanical RGB Gaming Keyboard", category: "Accessories", price: 14500.00, desc: "Tactile mechanical switches with customizable RGB backlighting and aluminum top plate.", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&auto=format&fit=crop&q=60" },
+            { id: 8, name: "Wireless Optical Mouse", category: "Accessories", price: 3800.00, desc: "Ergonomic wireless mouse with silent clicks and adjustable DPI settings.", image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500&auto=format&fit=crop&q=60" },
+            { id: 9, name: "Designer Ceramic Coffee Mug", category: "Lifestyle", price: 1800.00, desc: "Handcrafted ceramic mug with comfortable grip, perfect for coffee and tea lovers.", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=60" }
+        ];
+
+        // Load data from LocalStorage
+        let products = JSON.parse(localStorage.getItem('auraProducts')) || [...defaultProducts];
+        let cart = JSON.parse(localStorage.getItem('auraCart')) || [];
+        let wishlist = JSON.parse(localStorage.getItem('auraWishlist')) || [];
+        let registeredUsers = JSON.parse(localStorage.getItem('auraUsersDB')) || [];
+        let ordersDB = JSON.parse(localStorage.getItem('auraOrdersDB')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('auraUser')) || null;
+        let currentCategory = 'All';
+        let authMode = 'login';
+
+        // Reset Demo Data
+        function resetDemoData() {
+            if (confirm('Reset catalog to default demo products?')) {
+                products = [...defaultProducts];
+                localStorage.setItem('auraProducts', JSON.stringify(products));
+                loadProducts();
+                renderAdminProductList();
+                showToast('🔄 Catalog reset to default demo products');
+            }
+        }
+
+        // Wishlist Logic
+        function toggleWishlist(productId) {
+            if (wishlist.includes(productId)) {
+                wishlist = wishlist.filter(id => id !== productId);
+                showToast('💔 Removed from Wishlist');
+            } else {
+                wishlist.push(productId);
+                showToast('❤️ Saved to Wishlist');
+            }
+            localStorage.setItem('auraWishlist', JSON.stringify(wishlist));
+            updateWishlistCount();
+            loadProducts();
+        }
+
+        function updateWishlistCount() {
+            document.getElementById('wishlistCount').innerText = wishlist.length;
+        }
+
+        function openWishlistModal() {
+            const list = document.getElementById('wishlistList');
+            const savedItems = products.filter(p => wishlist.includes(p.id));
+
+            if (savedItems.length === 0) {
+                list.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 14px;">Your wishlist is empty.</p>`;
+            } else {
+                list.innerHTML = '';
+                savedItems.forEach(item => {
+                    list.innerHTML += `
+                        <div class="manage-item">
+                            <div>
+                                <strong>${item.name}</strong>
+                                <div style="font-size: 12px; color: var(--primary); font-weight: 600;">Rs. ${item.price.toFixed(2)}</div>
+                            </div>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="buy-btn" style="padding: 5px 10px; font-size: 12px;" onclick="addToCart(${item.id}); closeModal('wishlistModal')">Add to Cart</button>
+                                <button class="remove-btn" onclick="toggleWishlist(${item.id}); openWishlistModal()">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('wishlistModal').style.display = 'flex';
+        }
+
+        // Admin Product Management
+        function openAdminModal() {
+            renderAdminProductList();
+            document.getElementById('adminModal').style.display = 'flex';
+        }
+
+        function addNewProduct(e) {
+            e.preventDefault();
+            const name = document.getElementById('newProdName').value.trim();
+            const category = document.getElementById('newProdCategory').value;
+            const price = parseFloat(document.getElementById('newProdPrice').value);
+            const imageInput = document.getElementById('newProdImage').value.trim();
+            const desc = document.getElementById('newProdDesc').value.trim();
+
+            const newProduct = {
+                id: Date.now(),
+                name: name,
+                category: category,
+                price: price,
+                desc: desc,
+                image: imageInput || fallbackPlaceholder
+            };
+
+            products.unshift(newProduct);
+            localStorage.setItem('auraProducts', JSON.stringify(products));
+
+            e.target.reset();
+            loadProducts();
+            renderAdminProductList();
+            showToast(`✅ "${name}" added to store!`);
+        }
+
+        function deleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            localStorage.setItem('auraProducts', JSON.stringify(products));
+            
+            cart = cart.filter(c => c.id !== id);
+            wishlist = wishlist.filter(w => w !== id);
+            localStorage.setItem('auraWishlist', JSON.stringify(wishlist));
+            updateWishlistCount();
+            updateCart();
+            loadProducts();
+            renderAdminProductList();
+            showToast('🗑️ Product removed from catalog');
+        }
+
+        function renderAdminProductList() {
+            const list = document.getElementById('adminProductList');
+            list.innerHTML = '';
+            products.forEach(p => {
+                list.innerHTML += `
+                    <div class="manage-item">
+                        <div>
+                            <strong>${p.name}</strong>
+                            <div style="font-size: 11px; color: var(--text-muted);">${p.category} • Rs. ${p.price.toFixed(2)}</div>
+                        </div>
+                        <button class="remove-btn" onclick="deleteProduct(${p.id})">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        // Order History Management
+        function openOrdersModal() {
+            if (!currentUser) {
+                showToast('🔒 Please login to view your orders');
+                openAuthModal('login');
+                return;
+            }
+
+            const list = document.getElementById('ordersHistoryList');
+            const userOrders = ordersDB.filter(o => o.userEmail === currentUser.email);
+
+            if (userOrders.length === 0) {
+                list.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 14px;">You haven't placed any orders yet.</p>`;
+            } else {
+                list.innerHTML = '';
+                userOrders.forEach(order => {
+                    const itemsSummary = order.items.map(i => `${i.name} (x${i.qty})`).join(', ');
+                    list.innerHTML += `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <span>${order.orderId}</span>
+                                <span class="status-badge">Confirmed</span>
+                            </div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Date: ${order.date} • ${order.paymentMethod || 'COD'}</div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Deliver to: ${order.address || 'Standard Shipping'}</div>
+                            <div style="margin-bottom: 8px;">${itemsSummary}</div>
+                            <div style="font-weight: 700; color: var(--primary); text-align: right;">Total: Rs. ${order.total.toFixed(2)}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('ordersModal').style.display = 'flex';
+        }
+
+        // Authentication Functions
+        function openAuthModal(mode) {
+            switchAuthTab(mode);
+            document.getElementById('authModal').style.display = 'flex';
+        }
+
+        function switchAuthTab(mode) {
+            authMode = mode;
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const nameGroup = document.getElementById('nameGroup');
+            const nameInput = document.getElementById('userName');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const errorBox = document.getElementById('authErrorBox');
+
+            errorBox.style.display = 'none';
+
+            if (mode === 'register') {
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+                nameGroup.style.display = 'block';
+                nameInput.required = true;
+                submitBtn.innerText = 'Create Account';
+            } else {
+                registerTab.classList.remove('active');
+                loginTab.classList.add('active');
+                nameGroup.style.display = 'none';
+                nameInput.required = false;
+                submitBtn.innerText = 'Login';
+            }
+        }
+
+        function showAuthError(msg) {
+            const errorBox = document.getElementById('authErrorBox');
+            errorBox.innerText = msg;
+            errorBox.style.display = 'block';
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('userEmail').value.trim().toLowerCase();
+            const password = document.getElementById('userPassword').value;
+            const nameInput = document.getElementById('userName').value.trim();
+
+            if (authMode === 'register') {
+                const exists = registeredUsers.find(u => u.email === email);
+                if (exists) {
+                    showAuthError('⚠️ An account with this email already exists. Please login.');
+                    return;
+                }
+
+                const newUser = { name: nameInput, email: email, password: password };
+                registeredUsers.push(newUser);
+                localStorage.setItem('auraUsersDB', JSON.stringify(registeredUsers));
+
+                currentUser = { name: newUser.name, email: newUser.email };
+                localStorage.setItem('auraUser', JSON.stringify(currentUser));
+
+                updateAuthUI();
+                closeModal('authModal');
+                document.getElementById('authForm').reset();
+                showToast(`🎉 Account created! Welcome, ${currentUser.name}!`);
+            } else {
+                const matchedUser = registeredUsers.find(u => u.email === email);
+                if (!matchedUser) {
+                    showAuthError('❌ No account found with this email. Please create an account first.');
+                    return;
+                }
+                if (matchedUser.password !== password) {
+                    showAuthError('❌ Incorrect password! Please try again.');
+                    return;
+                }
+
+                currentUser = { name: matchedUser.name, email: matchedUser.email };
+                localStorage.setItem('auraUser', JSON.stringify(currentUser));
+
+                updateAuthUI();
+                closeModal('authModal');
+                document.getElementById('authForm').reset();
+                showToast(`👋 Welcome back, ${currentUser.name}!`);
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('auraUser');
+            updateAuthUI();
+            showToast('Logged out successfully');
+        }
+
+        function updateAuthUI() {
+            const authContainer = document.getElementById('authContainer');
+            if (currentUser) {
+                authContainer.innerHTML = `
+                    <div class="user-greeting">
+                        <span>👤 Hi, ${currentUser.name}</span>
+                        <button class="logout-btn" onclick="logout()">Logout</button>
+                    </div>
+                `;
+            } else {
+                authContainer.innerHTML = `
+                    <button class="nav-btn" onclick="openAuthModal('login')">👤 Login</button>
+                `;
+            }
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeToggle');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙 Dark';
+                localStorage.setItem('auraTheme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️ Light';
+                localStorage.setItem('auraTheme', 'dark');
+            }
+        }
+
+        if (localStorage.getItem('auraTheme') === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('themeToggle').innerText = '☀️ Light';
+        }
+
+        // Load & Sort Products
+        function loadProducts() {
+            const productGrid = document.getElementById('productGrid');
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const sortBy = document.getElementById('sortSelect').value;
+            productGrid.innerHTML = '';
+
+            let filtered = products.filter(p => {
+                const matchCat = currentCategory === 'All' || p.category === currentCategory;
+                const matchSearch = p.name.toLowerCase().includes(searchText);
+                return matchCat && matchSearch;
+            });
+
+            if (sortBy === 'priceLow') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (sortBy === 'priceHigh') {
+                filtered.sort((a, b) => b.price - a.price);
+            } else if (sortBy === 'nameAsc') {
+                filtered.sort((a, b) => a.name.localeCompare(b.name));
+            }
+
+            if (filtered.length === 0) {
+                productGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 30px;">No matching products found.</p>`;
+                return;
+            }
+
+            filtered.forEach(product => {
+                const isWished = wishlist.includes(product.id);
+                const card = document.createElement('div');
+                card.classList.add('product-card');
+                card.innerHTML = `
+                    <div class="product-img-wrapper">
+                        <img src="${product.image}" alt="${product.name}" class="product-img" onclick="openQuickView(${product.id})" onerror="this.src='${fallbackPlaceholder}'">
+                        <button class="wishlist-btn" onclick="toggleWishlist(${product.id})" title="Save to Wishlist">${isWished ? '❤️' : '🤍'}</button>
+                        <span class="quick-view-tag" onclick="openQuickView(${product.id})">Quick View</span>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-category">${product.category}</div>
+                        <div class="product-title" onclick="openQuickView(${product.id})">${product.name}</div>
+                        <div class="product-price">Rs. ${product.price.toFixed(2)}</div>
+                        <div class="card-actions">
+                            <button class="buy-btn" onclick="addToCart(${product.id})">Add to Cart</button>
+                            <button class="view-btn" onclick="openQuickView(${product.id})">Details</button>
+                        </div>
+                    </div>
+                `;
+                productGrid.appendChild(card);
+            });
+        }
+
+        function setCategory(category, btn) {
+            currentCategory = category;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            loadProducts();
+        }
+
+        function openQuickView(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            document.getElementById('modalImg').src = product.image;
+            document.getElementById('modalCategory').innerText = product.category;
+            document.getElementById('modalTitle').innerText = product.name;
+            document.getElementById('modalDesc').innerText = product.desc;
+            document.getElementById('modalPrice').innerText = `Rs. ${product.price.toFixed(2)}`;
+            document.getElementById('modalAddBtn').onclick = function() {
+                addToCart(product.id);
+                closeModal('productModal');
+            };
+            document.getElementById('productModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = message;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2400);
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCart();
+            showToast(`✓ ${product.name} added to cart`);
+        }
+
+        function changeQty(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.id !== productId);
+                }
+            }
+            updateCart();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(i => i.id !== productId);
+            updateCart();
+        }
+
+        function updateCart() {
+            localStorage.setItem('auraCart', JSON.stringify(cart));
+            const cartList = document.getElementById('cartList');
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartItemCount').innerText = totalItems;
+
+            if (cart.length === 0) {
+                cartList.innerHTML = `<li style="color: var(--text-muted); font-size: 14px; padding: 10px 0;">Your cart is empty.</li>`;
+                document.getElementById('cartTotal').innerText = `Total: Rs. 0.00`;
+                return;
+            }
+
+            cartList.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
+                const li = document.createElement('li');
+                li.classList.add('cart-item');
+                li.innerHTML = `
+                    <div>
+                        <strong style="color: var(--text-main);">${item.name}</strong>
+                        <div style="color: var(--primary); font-size: 13px; font-weight: 600;">Rs. ${item.price.toFixed(2)} each</div>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+                            <span style="color: var(--text-main);">${item.qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 600; margin-bottom: 6px; color: var(--text-main);">Rs. ${itemTotal.toFixed(2)}</div>
+                        <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
+                    </div>
+                `;
+                cartList.appendChild(li);
+            });
+
+            document.getElementById('cartTotal').innerText = `Total: Rs. ${total.toFixed(2)}`;
+        }
+
+        function scrollToCart() {
+            document.getElementById('cartSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Open Checkout Modal
+        function openCheckoutModal() {
+            if (cart.length === 0) {
+                alert('Your cart is empty! Please add items first.');
+                return;
+            }
+
+            if (!currentUser) {
+                showToast('🔒 Please login to complete your order');
+                openAuthModal('login');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            document.getElementById('shipName').value = currentUser.name;
+            document.getElementById('checkoutModalTotal').innerText = `Rs. ${total.toFixed(2)}`;
+            document.getElementById('checkoutModal').style.display = 'flex';
+        }
+
+        // Process Order & Show Receipt
+        function processOrder(e) {
+            e.preventDefault();
+            const recipient = document.getElementById('shipName').value.trim();
+            const phone = document.getElementById('shipPhone').value.trim();
+            const address = document.getElementById('shipAddress').value.trim();
+            const paymentMethod = document.getElementById('paymentMethod').value;
+
+            const receiptItems = document.getElementById('receiptItems');
+            receiptItems.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const lineTotal = item.price * item.qty;
+                total += lineTotal;
+                receiptItems.innerHTML += `
+                    <div class="receipt-row" style="color: var(--text-main);">
+                        <span>${item.name} (x${item.qty})</span>
+                        <span>Rs. ${lineTotal.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            const orderNum = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+            const orderDate = new Date().toLocaleString();
+
+            const newOrder = {
+                orderId: orderNum,
+                userEmail: currentUser.email,
+                userName: recipient,
+                phone: phone,
+                address: address,
+                paymentMethod: paymentMethod,
+                date: orderDate,
+                items: [...cart],
+                total: total
+            };
+            ordersDB.unshift(newOrder);
+            localStorage.setItem('auraOrdersDB', JSON.stringify(ordersDB));
+
+            closeModal('checkoutModal');
+
+            document.getElementById('orderIdDisplay').innerText = `Order ID: ${orderNum} (${paymentMethod})`;
+            document.getElementById('customerDisplay').innerText = `Recipient: ${recipient} (${phone})`;
+            document.getElementById('shippingDisplay').innerText = `Shipping Address: ${address}`;
+            document.getElementById('receiptTotal').innerText = `Rs. ${total.toFixed(2)}`;
+            document.getElementById('receiptModal').style.display = 'flex';
+
+            cart = [];
+            updateCart();
+        }
+
+        // Initialize App
+        updateAuthUI();
+        updateWishlistCount();
+        loadProducts();
+        updateCart();
+    </script>
+
+</body>
+</html>
